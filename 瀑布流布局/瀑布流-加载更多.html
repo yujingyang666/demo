@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .clear::after {
+            display: block;
+            content: '';
+            clear: both;
+        }
+        
+        .water {
+            width: 100%;
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .pbimg-box {
+            width: 200px;
+            position: absolute;
+            margin: 10px;
+            transition: all 0.5s;
+        }
+        
+        .pbimg-box img {
+            width: 100%;
+        }
+        
+        .pb-content {
+            width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        #load {
+            display: inline-block;
+            text-decoration: none;
+            color: crimson;
+            border: 1px solid crimson;
+            width: 150px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pb-content">
+        <div class="water clear">
+        </div>
+        <a id='load' href="#">加载更多</a>
+    </div>
+
+    <script>
+        var Water = (function () {
+            function _Water($ct) {
+                this.$ct = $ct
+                this.init()
+                this.bind()
+            }
+
+            _Water.prototype = {
+                init: function () {
+                    console.log(this.$ct.width())
+                    this.colLength = parseInt(this.$ct.width() / 220)
+                    this.boxarr = []
+                    for (var i = 0; i < this.colLength; i++) {
+                        this.boxarr[i] = 0;
+                    }
+                    this.render()
+                },
+                render: function () {
+                    var urls = getImgUrls(8)
+                    var _this = this
+                    $(urls).each(function (index, url) {
+                        var html = '';
+                        html += '<div class="pbimg-box">'
+                        html += '<img src="' + url + '" alt="" ></div>'
+                        var dom = $(html)
+                        _this.$ct.find('.water').append(dom)
+                        dom.find("img").load(function () { //等到图片加载完才布局
+                            _this.flowingWater(dom)
+                        })
+                    })
+                    this.lock = false
+                },
+                flowingWater: function (data) {
+                    var _this = this
+                    var minVal = Math.min.apply(null, _this.boxarr)
+                    var minIdx = this.boxarr.indexOf(minVal)
+                    $(data).css({
+                        top: _this.boxarr[minIdx],
+                        left: $(data).outerWidth(true) * minIdx
+                    })
+                    this.boxarr[minIdx] += $(data).outerHeight(true)
+                    this.$ct.find('.water').css({
+                        height: _this.boxarr[minIdx]
+                    })
+                },
+                bind: function () {
+                    var _this = this
+                    this.lock = false
+                    $('#load').on('click', function (e) {
+                        e.preventDefault()
+                        if (_this.lock === false) {
+                            _this.lock = true
+                            _this.render()
+                        }
+
+
+                    })
+                }
+
+            }
+
+            function getImgUrls(num) {
+                var width, height, urls = []
+                for (var i = 0; i < num; i++) {
+                    width = 200;
+                    height = Math.floor(Math.random() * 60 + 200);
+                    urls.push('https://unsplash.it/' + width + '/' + height)
+                    
+                }
+                return urls;
+            }
+            return{
+                init:function($ct){
+                    new _Water($ct)
+                }
+            }
+        })()
+
+        Water.init($('.pb-content'))
+
+    </script>
+</body>
+
+</html>

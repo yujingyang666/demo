@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            background: #FFF;
+        }
+        
+        .wrap {
+            width: 500px;
+            border: 1px solid #CCC;
+            padding: 20px 10px;
+            border-radius: 4px;
+            margin: 20px auto;
+        }
+        
+        .tab {
+            list-style: none;
+            display: block;
+            border-bottom: 1px solid #CCC;
+        }
+        
+        .clear:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        
+        .tab>li {
+            list-style: none;
+            float: left;
+            cursor: pointer;
+            color: lightblue;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #fff;
+            line-height: 30px;
+            text-align: center;
+            padding: 5px 20px;
+        }
+        
+        .content {
+            padding: 20px;
+            list-style: none;
+        }
+        
+        .tab .checked {
+            color: #000;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #ccc;
+            border-bottom-color: #fff;
+            margin-bottom: -1px;
+        }
+        
+        .content li {
+            display: none;
+        }
+        
+        .content .checked {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <ul class="tab clear">
+            <li class="checked">tab1</li>
+            <li>tab2</li>
+            <li>tab3</li>
+        </ul>
+        <ul class="content">
+            <li class='checked'>内容1</li>
+            <li>内容2</li>
+            <li>内容3</li>
+        </ul>
+    </div>
+    <div class="wrap">
+        <ul class="tab clear">
+            <li class="checked">tab1</li>
+            <li>tab2</li>
+            <li>tab3</li>
+        </ul>
+        <ul class="content">
+            <li class='checked'>内容1</li>
+            <li>内容2</li>
+            <li>内容3</li>
+        </ul>
+    </div>
+
+    <script>
+
+    var Table =(function(){  //封装组件
+        function _Table(ct) {
+            this.ct = ct
+            this.init()
+            this.bind()
+        }
+
+        _Table.prototype = {
+            init: function () {
+                this.tab = this.ct.querySelector('.tab')
+                this.tabLis = this.ct.querySelectorAll('.tab>li')
+                this.content = this.ct.querySelectorAll('.content>li')
+            },
+            bind: function () {
+                var _this = this
+                this.tab.addEventListener('click', function (e) {
+                    if (e.target.tagName.toLowerCase() === 'li') {
+                        for (var i = 0; i < _this.tabLis.length; i++) {
+                            _this.tabLis[i].classList.remove('checked')
+                            _this.content[i].classList.remove('checked')
+                        }
+                        e.target.classList.add('checked')
+                        var index = [].indexOf.call(_this.tabLis, e.target);
+                        _this.content[index].classList.add('checked')
+                    }
+                })
+            }
+        }
+        return {
+            init:function(ct){  //init接口
+                for(var i=0;i<ct.length;i++){
+                    new _Table(ct[i])
+                }
+                
+            }
+        }
+    })()
+
+    Table.init(document.querySelectorAll('.wrap')) //调用接口
+
+    </script>
+</body>
+
+</html>
