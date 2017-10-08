@@ -1,4 +1,4 @@
-# mydemo
+# mydemos
 
 > 一些静态页面布局和小组件，主要是一些学习前端的过程中所做的小demo，包含原生JS、jQuery、HTML 5&CSS 3、webpack打包、常见DOM操作和ajax的运用。
 
